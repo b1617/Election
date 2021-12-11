@@ -13,26 +13,22 @@ contract Election {
         string firstname;
         string lastname;
         string team;
-        uint256 age;
+        string age;
     }
 
     event Log(string msg, address from, uint256 to);
 
-    constructor() public {
-        name = "Election";
+    constructor() {
+        name = 'Election';
     }
 
     function addCandidate(
         string memory _firstname,
         string memory _lastname,
         string memory _team,
-        uint256 _age
-    ) public payable {
-        require(
-            bytes(_firstname).length > 0 &&
-                bytes(_lastname).length > 0 &&
-                _age > 17
-        );
+        string memory _age
+    ) public {
+        require(bytes(_firstname).length > 0 && bytes(_lastname).length > 0);
         candidates[candidateCount] = Candidate(
             candidateCount,
             _firstname,
@@ -44,10 +40,22 @@ contract Election {
         ++candidateCount;
     }
 
-    function addVote(uint256 _id) public payable {
+    function addVote(uint256 _id) public {
         require(_id < candidateCount && !voters[msg.sender]);
         votes[_id] = votes[_id] + 1;
         voters[msg.sender] = true;
-        emit Log("Add vote", msg.sender, _id);
+        emit Log('Add vote', msg.sender, _id);
+    }
+
+    function getAllCandidates() public view returns (Candidate[] memory) {
+        Candidate[] memory _candidates = new Candidate[](candidateCount);
+        for (uint256 i = 0; i < candidateCount; ++i) {
+            _candidates[i] = candidates[i];
+        }
+        return _candidates;
+    }
+
+    function read() public view returns (string memory) {
+        return name;
     }
 }

@@ -1,20 +1,44 @@
-import React from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
 import { useForm, Controller } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-const AddNewCandidate = () => {
+import { ICandidate } from '../interfaces/Candidate';
+import { addCandidate } from '../redux/slices/candidateSlice';
+import { RootState } from '../redux/store';
+
+const CandidateForm = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const contract: any = useSelector((state: RootState) => state.contract);
+    const { account } = useSelector((state: RootState) => state.user);
     const {
         handleSubmit,
         control,
         formState: { errors },
     } = useForm();
 
-    const onSubmit = (values: any) => {
-        console.log(values);
+    const onSubmit = async (candidate: ICandidate) => {
+        if (contract?.methods && account) {
+            await contract.methods
+                .addCandidate(
+                    candidate.firstname,
+                    candidate.lastname,
+                    candidate.age,
+                    candidate.team
+                )
+                .send({ from: account });
+            dispatch(addCandidate(candidate));
+            toast.success('Success');
+            navigate('/');
+        } else {
+            toast.success('Please connect your wallet');
+        }
     };
 
     return (
-        <Container style={{ padding: ' 0 10% 0 10%' }}>
+        <Container style={{ padding: '0 10% 0 10%' }}>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Form.Group className="mb-3" controlId="formFirstname">
                     <Form.Label>Firstname</Form.Label>
@@ -114,4 +138,4 @@ const AddNewCandidate = () => {
     );
 };
 
-export default AddNewCandidate;
+export default CandidateForm;

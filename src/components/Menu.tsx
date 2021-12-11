@@ -1,11 +1,33 @@
 import { Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import { setUser } from '../redux/slices/userSlice';
+interface Props {
+    loadBlockchainData: () => void;
+}
 
-const Menu = () => {
-    const [address, setAddress] = useState<string>('');
+const Menu = ({ loadBlockchainData }: Props) => {
+    const dispatch = useDispatch();
+    const { account } = useSelector((state: RootState) => state.user);
     const [isConnected, setIsConnected] = useState<boolean>(false);
+
+    const handleAccountsChanged = useCallback(
+        (accounts: string[]) => {
+            if (accounts.length > 0) {
+                dispatch(setUser({ account: accounts[0] }));
+                setIsConnected(true);
+                loadBlockchainData();
+                toast.success('Connected');
+            } else {
+                dispatch(setUser({ account: null }));
+                setIsConnected(false);
+            }
+        },
+        [loadBlockchainData, dispatch]
+    );
 
     useEffect(() => {
         const init = async () => {
@@ -32,19 +54,7 @@ const Menu = () => {
                 });
             }
         };
-    }, []);
-
-    const handleAccountsChanged = (accounts: string[]) => {
-        console.log('handle account changed');
-        if (accounts.length > 0) {
-            setAddress(accounts[0]);
-            setIsConnected(true);
-            toast.success('Connected');
-        } else {
-            setAddress('');
-            setIsConnected(false);
-        }
-    };
+    }, [handleAccountsChanged]);
 
     const connectMetamask = async () => {
         const { ethereum } = window as any;
@@ -75,14 +85,16 @@ const Menu = () => {
                     </button>
                 </Link>
                 <div style={{ marginLeft: 'auto' }}>
-                    <Link to="/new">
-                        <button
-                            type="button"
-                            className="btn btn-outline-primary me-2"
-                        >
-                            New candidate
-                        </button>
-                    </Link>
+                    {isConnected && (
+                        <Link to="/new">
+                            <button
+                                type="button"
+                                className="btn btn-outline-primary me-2"
+                            >
+                                New candidate
+                            </button>
+                        </Link>
+                    )}
                 </div>
                 <div>
                     <button
@@ -92,7 +104,7 @@ const Menu = () => {
                         className="btn btn-outline-success me-2"
                     >
                         {isConnected ? (
-                            <span> {address} </span>
+                            <span> {account} </span>
                         ) : (
                             <span>Connect to MetaMask </span>
                         )}

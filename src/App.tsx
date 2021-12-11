@@ -1,16 +1,57 @@
+import { useCallback, useState } from 'react';
+
+import { useDispatch } from 'react-redux';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
-import Home from './pages/Home';
+import { ToastContainer } from 'react-toastify';
+import Web3 from 'web3';
+
+import Election from './abis/Election.json';
+import Footer from './components/Footer';
+import Menu from './components/Menu';
+import { ICandidate } from './interfaces/Candidate';
+import { INetwork } from './interfaces/Network';
 import About from './pages/About';
 import Candidate from './pages/Candidate';
-import Menu from './components/Menu';
+import Home from './pages/Home';
 import NotFound from './pages/NotFound';
-import Footer from './components/Footer';
-import { ToastContainer } from 'react-toastify';
+import { setCandidates } from './redux/slices/candidateSlice';
+import { setMethods } from './redux/slices/contractSlice';
 
 const App = () => {
+    const dispatch = useDispatch();
+    const [contract, setContract] = useState<any>();
+
+    const loadBlockchainData = useCallback(async () => {
+        if ((window as any).ethereum) {
+            const { ethereum } = window as any;
+            (window as any).web3 = new Web3(ethereum);
+            const { web3 } = window as any;
+            const networkId = await web3.eth.net.getId();
+            const network: INetwork = Election.networks[networkId];
+            if (network) {
+                const electionContract = new web3.eth.Contract(
+                    Election.abi,
+                    network && network.address
+                );
+
+                if (electionContract) {
+                    console.log(electionContract.methods);
+                    dispatch(setMethods({ ...electionContract.methods }));
+                    setContract(electionContract);
+                    const candidates: ICandidate[] =
+                        await electionContract.methods
+                            .getAllCandidates()
+                            .call();
+
+                    dispatch(setCandidates(candidates));
+                }
+            }
+        }
+    }, []);
+
     return (
         <BrowserRouter>
-            <Menu />
+            <Menu loadBlockchainData={loadBlockchainData} />
             <main>
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -27,7 +68,7 @@ const App = () => {
                 newestOnTop={false}
                 closeOnClick
                 rtl={false}
-                pauseOnFocusLoss
+                pauseOnFocusLoss={false}
                 draggable={false}
                 theme="colored"
                 pauseOnHover
