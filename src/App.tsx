@@ -9,6 +9,7 @@ import Election from './abis/Election.json';
 import Footer from './components/Footer';
 import Menu from './components/Menu';
 import { ICandidate } from './interfaces/Candidate';
+import { IContract } from './interfaces/Contract';
 import { INetwork } from './interfaces/Network';
 import About from './pages/About';
 import Candidate from './pages/Candidate';
@@ -19,7 +20,7 @@ import { setMethods } from './redux/slices/contractSlice';
 
 const App = () => {
     const dispatch = useDispatch();
-    const [contract, setContract] = useState<any>();
+    const [_, setContract] = useState<IContract>();
 
     const loadBlockchainData = useCallback(async () => {
         if ((window as any).ethereum) {

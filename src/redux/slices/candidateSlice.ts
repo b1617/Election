@@ -12,9 +12,20 @@ export const candidateSlice = createSlice({
         addCandidate: (state, action: PayloadAction<ICandidate>) => {
             return [...state, action.payload];
         },
+        updateCandidate: (state, action: PayloadAction<ICandidate>) => {
+            state.splice(
+                state.findIndex((candidate: ICandidate) => {
+                    candidate.id === action.payload.id;
+                }),
+                1,
+                action.payload
+            );
+            return state;
+        },
     },
 });
 
-export const { setCandidates, addCandidate } = candidateSlice.actions;
+export const { setCandidates, addCandidate, updateCandidate } =
+    candidateSlice.actions;
 
 export default candidateSlice.reducer;

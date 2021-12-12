@@ -12,8 +12,17 @@ contract Election {
         uint256 id;
         string firstname;
         string lastname;
-        string team;
+        string description;
         string age;
+    }
+
+    struct CandidateInformation {
+        uint256 id;
+        string firstname;
+        string lastname;
+        string description;
+        string age;
+        uint256 votes;
     }
 
     event Log(string msg, address from, uint256 to);
@@ -25,7 +34,7 @@ contract Election {
     function addCandidate(
         string memory _firstname,
         string memory _lastname,
-        string memory _team,
+        string memory _description,
         string memory _age
     ) public {
         require(bytes(_firstname).length > 0 && bytes(_lastname).length > 0);
@@ -33,7 +42,7 @@ contract Election {
             candidateCount,
             _firstname,
             _lastname,
-            _team,
+            _description,
             _age
         );
         votes[candidateCount] = 0;
@@ -47,12 +56,27 @@ contract Election {
         emit Log('Add vote', msg.sender, _id);
     }
 
-    function getAllCandidates() public view returns (Candidate[] memory) {
-        Candidate[] memory _candidates = new Candidate[](candidateCount);
+    function getAllCandidates()
+        public
+        view
+        returns (CandidateInformation[] memory)
+    {
+        CandidateInformation[]
+            memory _candidatesInformation = new CandidateInformation[](
+                candidateCount
+            );
         for (uint256 i = 0; i < candidateCount; ++i) {
-            _candidates[i] = candidates[i];
+            Candidate memory candidate = candidates[i];
+            _candidatesInformation[i] = CandidateInformation(
+                candidate.id,
+                candidate.firstname,
+                candidate.lastname,
+                candidate.description,
+                candidate.age,
+                votes[i]
+            );
         }
-        return _candidates;
+        return _candidatesInformation;
     }
 
     function read() public view returns (string memory) {

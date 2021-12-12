@@ -3,5 +3,6 @@ export interface ICandidate {
     firstname: string;
     lastname: string;
     age: string;
-    team: string;
+    description: string;
+    votes: number;
 }

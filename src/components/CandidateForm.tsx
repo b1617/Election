@@ -25,15 +25,15 @@ const CandidateForm = () => {
                 .addCandidate(
                     candidate.firstname,
                     candidate.lastname,
-                    candidate.age,
-                    candidate.team
+                    candidate.description,
+                    candidate.age
                 )
                 .send({ from: account });
-            dispatch(addCandidate(candidate));
+            dispatch(addCandidate({ ...candidate, votes: 0 }));
             toast.success('Success');
             navigate('/');
         } else {
-            toast.success('Please connect your wallet');
+            toast.error('Please connect your wallet');
         }
     };
 
@@ -98,10 +98,10 @@ const CandidateForm = () => {
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3">
-                    <Form.Label>Team</Form.Label>
+                    <Form.Label>Description</Form.Label>
                     <Controller
                         control={control}
-                        name="team"
+                        name="description"
                         rules={{ required: true }}
                         render={({ field: { value, onChange, ref } }) => (
                             <Form.Control
@@ -110,7 +110,7 @@ const CandidateForm = () => {
                                 onChange={onChange}
                                 value={value}
                                 isInvalid={errors.lastname}
-                                placeholder="Paris"
+                                placeholder="Hello world"
                             />
                         )}
                     />
@@ -122,7 +122,7 @@ const CandidateForm = () => {
                         render={({ formState }) => (
                             <Button
                                 type="submit"
-                                className="btn btn-primary"
+                                variant="outline-primary"
                                 style={{ float: 'right' }}
                             >
                                 {formState.isSubmitting && (

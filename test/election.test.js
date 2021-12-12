@@ -11,8 +11,8 @@ contract('Given a election contract', function ([deployer, candidate, voter]) {
 
     before(async () => {
         election = await Election.deployed();
-        await election.addCandidate('John', 'Doe', 'Team 1', 18);
-        await election.addCandidate('Alice', 'Joe', 'Team 2', 28);
+        await election.addCandidate('John', 'Doe', 'description 1', 18);
+        await election.addCandidate('Alice', 'Joe', 'description 2', 28);
     });
 
     describe('when deploy the contract', () => {
