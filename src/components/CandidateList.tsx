@@ -1,7 +1,9 @@
-import { useSelector } from 'react-redux';
 import { Container } from 'react-bootstrap';
-import { RootState } from '../redux/store';
+import { useSelector } from 'react-redux';
+
 import { ICandidate } from '../interfaces/Candidate';
+import { RootState } from '../redux/store';
+
 import CandidateItem from './CandidateItem';
 
 const CandidateList = () => {

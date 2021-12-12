@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { ICandidate } from '../../interfaces/Candidate';
 
 export const candidateSlice = createSlice({

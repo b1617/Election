@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { IUser } from '../../interfaces/User';
 
 const initialUser: IUser = {

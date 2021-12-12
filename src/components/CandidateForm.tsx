@@ -119,7 +119,7 @@ const CandidateForm = () => {
                     <Controller
                         name=""
                         control={control}
-                        render={({ field: { ref }, formState }) => (
+                        render={({ formState }) => (
                             <Button
                                 type="submit"
                                 className="btn btn-primary"

@@ -1,10 +1,12 @@
+import { useState, useEffect, useCallback } from 'react';
+
 import { Container } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useState, useEffect, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
+
 import { setUser } from '../redux/slices/userSlice';
+import { RootState } from '../redux/store';
 interface Props {
     loadBlockchainData: () => void;
 }
