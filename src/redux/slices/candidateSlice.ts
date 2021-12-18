@@ -10,12 +10,15 @@ export const candidateSlice = createSlice({
             return [...action.payload];
         },
         addCandidate: (state, action: PayloadAction<ICandidate>) => {
-            return [...state, action.payload];
+            return [
+                ...state,
+                { ...action.payload, id: state.length.toString() },
+            ];
         },
         updateCandidate: (state, action: PayloadAction<ICandidate>) => {
             state.splice(
                 state.findIndex((candidate: ICandidate) => {
-                    candidate.id === action.payload.id;
+                    return candidate.id == action.payload.id;
                 }),
                 1,
                 action.payload

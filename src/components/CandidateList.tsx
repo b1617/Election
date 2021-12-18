@@ -25,13 +25,18 @@ const CandidateList = () => {
 
     const onVote = async (candidate: ICandidate) => {
         try {
-            await contract.methods
-                .addVote(candidate.id)
-                .send({ from: account });
-            dispatch(
-                updateCandidate({ ...candidate, votes: +candidate.votes + 1 })
-            );
-            toast.success('Success');
+            if (candidate?.id) {
+                await contract.methods
+                    .addVote(Number.parseInt(candidate.id))
+                    .send({ from: account });
+                dispatch(
+                    updateCandidate({
+                        ...candidate,
+                        votes: +candidate.votes + 1,
+                    })
+                );
+                toast.success('Success');
+            }
         } catch (e) {
             console.error(e);
             toast.error('Failed to vote');
@@ -39,7 +44,7 @@ const CandidateList = () => {
     };
 
     return (
-        <Container className="d-flex">
+        <Container className="d-flex flex-wrap justify-content-center">
             {candidates.map((candidate, key) => {
                 return (
                     <CandidateItem

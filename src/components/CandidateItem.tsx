@@ -11,7 +11,7 @@ const CandidateItem = ({ candidate, onVote }: Props) => {
     return (
         <Card className="m-3 w-25">
             <Card.Body>
-                <Card.Title>{`${candidate.lastname} ${candidate.firstname}`}</Card.Title>
+                <Card.Title>{`${candidate.firstname} ${candidate.lastname}`}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">
                     {candidate.age}
                 </Card.Subtitle>
